@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f8f5">
+    <meta name="description" content="Organiza las notificaciones de tu escuela, sigue las respuestas de las familias y encuentra rápidamente la información que falta.">
+    <title>Aula Clara — Comunicación escolar</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell" id="app">
+      <aside class="sidebar" id="sidebar">
+        <div class="brand-block">
+          <span class="brand-mark" aria-hidden="true" id="brandIcon"></span>
+          <span class="brand-name">aula<span>clara</span></span>
+          <button class="mobile-close icon-button" type="button" data-action="close-nav" aria-label="Cerrar navegación"></button>
+        </div>
+        <button class="school-switcher" type="button" aria-label="Colegio Horizonte, Primaria y Jardín">
+          <span class="school-avatar">CH</span>
+          <span class="school-copy"><strong>Colegio Horizonte</strong><small>Primaria y Jardín</small></span>
+          <span class="switcher-icon" aria-hidden="true"></span>
+        </button>
+        <div class="nav-section-label">ESPACIO ESCOLAR</div>
+        <nav class="side-nav" aria-label="Navegación principal" id="sideNav"></nav>
+        <div class="sidebar-bottom">
+          <div class="sidebar-help">
+            <span class="help-sparkle" aria-hidden="true">i</span>
+            <div><strong>¿Necesitas ayuda?</strong><small>Estamos para acompañarte</small></div>
+            <span class="help-chevron" aria-hidden="true"></span>
+          </div>
+          <button class="profile-button" type="button" aria-label="Perfil de Mariana Ruiz, Administradora">
+            <span class="profile-avatar">MR</span>
+            <span class="profile-copy"><strong>Mariana Ruiz</strong><small>Administradora</small></span>
+            <span class="profile-menu-icon" aria-hidden="true"></span>
+          </button>
+        </div>
+      </aside>
+      <div class="main-column">
+        <header class="topbar">
+          <button class="mobile-menu icon-button" type="button" data-action="open-nav" aria-label="Abrir navegación"></button>
+          <div class="breadcrumbs"><span>COLEGIO HORIZONTE</span><span class="breadcrumb-divider">/</span><span id="breadcrumbCurrent">INICIO</span></div>
+          <div class="topbar-actions">
+            <span class="school-year">Ciclo 2026–2027 <span class="switcher-icon" aria-hidden="true"></span></span>
+            <button class="icon-button notification-button" type="button" data-action="system-notifications" aria-label="Notificaciones del sistema"><i></i></button>
+            <span class="avatar avatar-peach avatar-small" aria-label="Mariana Ruiz">MR</span>
+          </div>
+        </header>
+        <main class="main-content" id="mainContent" tabindex="-1"></main>
+      </div>
+      <button class="mobile-scrim" id="mobileScrim" type="button" data-action="close-nav" aria-label="Cerrar menú" hidden></button>
+      <div id="modalRoot"></div>
+      <div id="toastRoot" aria-live="polite" aria-atomic="true"></div>
+    </div>
+  </body>
+</html>
