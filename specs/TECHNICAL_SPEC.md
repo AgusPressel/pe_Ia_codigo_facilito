@@ -95,9 +95,12 @@ Las acciones deben identificarse mediante el atributo `data-action`.
   urgent,
   needsSignature,
   needsReply,
-  respondedIds
+  respondedIds,
+  dueDays
 }
 ```
+
+`dueDays` es opcional: días desde hoy hasta el vencimiento, o `null` sin fecha (ver `specs/features/FOLLOWUP_QUEUE.md`). El estado `contacted` (id de alumno a hora de contacto) vive en memoria.
 
 `respondedIds` es opcional. No debe permitir duplicados al registrar respuestas.
 

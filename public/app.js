@@ -62,24 +62,30 @@ const students = [
   { id: "AL-2110", name: "Joaquín Romero", room: "2.º B · Primaria", guardian: "Paula Romero", phone: "+54 9 11 5555 0145", pickupPerson: "Pendiente", missing: "Persona autorizada", tone: "blue" },
   { id: "AL-2014", name: "Emma Torres", room: "Jardín · Salas 4 y 5", guardian: "Daniela Torres", phone: "+54 9 11 5555 0137", pickupPerson: "Roberto Torres", missing: "Firma de autorización", tone: "peach" },
   { id: "AL-2092", name: "Benjamín Díaz", room: "3.º A · Primaria", guardian: "Carla Díaz", phone: "+54 9 11 5555 0172", pickupPerson: "Pendiente", missing: "Confirmación de asistencia", tone: "sage" },
+  { id: "AL-2066", name: "Camila Suárez", room: "3.º A · Primaria", guardian: "Andrea Suárez", phone: "+54 9 11 5555 0163", pickupPerson: "Hernán Suárez", missing: "Ficha completa", tone: "lilac" },
+  { id: "AL-1997", name: "Lucas Pereyra", room: "1.º A · Primaria", guardian: "Julián Pereyra", phone: "+54 9 11 5555 0119", pickupPerson: "Pendiente", missing: "Persona autorizada", tone: "blue" },
+  { id: "AL-2120", name: "Renata Gómez", room: "2.º B · Primaria", guardian: "Silvia Gómez", phone: "+54 9 11 5555 0151", pickupPerson: "Pendiente", missing: "Firma de autorización", tone: "peach" },
 ]
 
 const notices = [
-  { id: 1, title: "Salida al Museo de Ciencias", type: "Autorización", group: "3.º A · Primaria", date: "Hoy, 16:00", total: 28, confirmed: 2, delivered: 26, status: "Requiere atención", icon: "trip", urgent: true, needsSignature: true, needsReply: true, respondedIds: ["AL-2048", "AL-2092"] },
-  { id: 2, title: "Encuentro de familias", type: "Evento", group: "Toda primaria", date: "Lun, 2 nov.", total: 94, confirmed: 3, delivered: 90, status: "En seguimiento", icon: "event", urgent: true, needsSignature: false, needsReply: true, respondedIds: ["AL-2051", "AL-2014", "AL-2110"] },
-  { id: 3, title: "Actualización de cartilla de vacunación", type: "Vacunas", group: "1.º A · Primaria", date: "Mié, 4 nov.", total: 24, confirmed: 1, delivered: 24, status: "En seguimiento", icon: "health", urgent: true, needsSignature: false, needsReply: true, respondedIds: ["AL-1983"] },
-  { id: 4, title: "Autorización de retiro por terceros", type: "Autorización", group: "2.º B · Primaria", date: "Vie, 6 nov.", total: 26, confirmed: 1, delivered: 26, status: "Casi completo", icon: "pickup", urgent: false, needsSignature: true, needsReply: true, respondedIds: ["AL-2110"] },
-  { id: 5, title: "Festival de primavera", type: "Evento", group: "Jardín · Salas 4 y 5", date: "Sáb, 7 nov.", total: 43, confirmed: 1, delivered: 41, status: "En seguimiento", icon: "event", urgent: false, needsSignature: false, needsReply: true, respondedIds: ["AL-2014"] },
+  { id: 1, dueDays: 0, title: "Salida al Museo de Ciencias", type: "Autorización", group: "3.º A · Primaria", date: "Hoy, 16:00", total: 28, confirmed: 2, delivered: 26, status: "Requiere atención", icon: "trip", urgent: true, needsSignature: true, needsReply: true, respondedIds: ["AL-2048", "AL-2092"] },
+  { id: 2, dueDays: 3, title: "Encuentro de familias", type: "Evento", group: "Toda primaria", date: "Lun, 2 nov.", total: 94, confirmed: 3, delivered: 90, status: "En seguimiento", icon: "event", urgent: true, needsSignature: false, needsReply: true, respondedIds: ["AL-2051", "AL-2014", "AL-2110"] },
+  { id: 3, dueDays: 5, title: "Actualización de cartilla de vacunación", type: "Vacunas", group: "1.º A · Primaria", date: "Mié, 4 nov.", total: 24, confirmed: 1, delivered: 24, status: "En seguimiento", icon: "health", urgent: true, needsSignature: false, needsReply: true, respondedIds: ["AL-1983"] },
+  { id: 4, dueDays: 7, title: "Autorización de retiro por terceros", type: "Autorización", group: "2.º B · Primaria", date: "Vie, 6 nov.", total: 26, confirmed: 1, delivered: 26, status: "Casi completo", icon: "pickup", urgent: false, needsSignature: true, needsReply: true, respondedIds: ["AL-2110"] },
+  { id: 5, dueDays: 8, title: "Festival de primavera", type: "Evento", group: "Jardín · Salas 4 y 5", date: "Sáb, 7 nov.", total: 43, confirmed: 1, delivered: 41, status: "En seguimiento", icon: "event", urgent: false, needsSignature: false, needsReply: true, respondedIds: ["AL-2014"] },
 ]
 
 const groups = ["1.º A · Primaria", "2.º B · Primaria", "3.º A · Primaria", "Toda primaria", "Jardín · Salas 4 y 5"]
+const DEMO_TODAY = new Date("2026-10-30T12:00:00")
 const navItems = [
+  { id: "hoy", label: "Seguimiento de hoy", icon: "checkCheck" },
   { id: "inicio", label: "Inicio", icon: "home" },
   { id: "notificaciones", label: "Notificaciones", icon: "bell", count: "12" },
   { id: "alumnos", label: "Alumnos", icon: "users" },
   { id: "administracion", label: "Administración", icon: "settings" },
 ]
-const state = { view: "inicio", filter: "Todos", search: "", studentSearch: "", studentGroup: "Todos los grupos", modal: null, adminOpen: "Estructura escolar", mobileNavOpen: false }
+const contacted = {}
+const state = { view: "hoy", followTab: "Por contactar", filter: "Todos", search: "", studentSearch: "", studentGroup: "Todos los grupos", modal: null, adminOpen: "Estructura escolar", mobileNavOpen: false }
 const mainContent = document.querySelector("#mainContent")
 const modalRoot = document.querySelector("#modalRoot")
 const toastRoot = document.querySelector("#toastRoot")
@@ -93,9 +99,13 @@ function statusBadge(status) {
   return `<span class="status ${statusClass}"><span class="status-dot"></span>${escapeHtml(status)}</span>`
 }
 
+function navCount(item) {
+  return item.id === "hoy" ? String(followUpQueue().filter((family) => !contacted[family.student.id]).length || "") : item.count
+}
+
 function renderSidebar() {
   document.querySelector("#brandIcon").innerHTML = icon("graduation", 21)
-  document.querySelector("#sideNav").innerHTML = navItems.map((item) => `<button class="nav-item${state.view === item.id ? " nav-item-active" : ""}" type="button" data-action="navigate" data-view="${item.id}"${state.view === item.id ? ' aria-current="page"' : ""}>${icon(item.icon)}<span>${item.label}</span>${item.count ? `<span class="nav-count">${item.count}</span>` : ""}</button>`).join("")
+  document.querySelector("#sideNav").innerHTML = navItems.map((item) => `<button class="nav-item${state.view === item.id ? " nav-item-active" : ""}" type="button" data-action="navigate" data-view="${item.id}"${state.view === item.id ? ' aria-current="page"' : ""}>${icon(item.icon)}<span>${item.label}</span>${navCount(item) ? `<span class="nav-count">${navCount(item)}</span>` : ""}</button>`).join("")
   document.querySelector("#breadcrumbCurrent").textContent = (navItems.find((item) => item.id === state.view) || navItems[0]).label.toUpperCase()
   document.querySelector(".mobile-menu").innerHTML = icon("menu", 20)
   document.querySelector(".mobile-close").innerHTML = icon("x", 19)
@@ -134,6 +144,62 @@ function noticeAggregate() {
   }
 }
 
+function dueLabel(days) {
+  if (days === null || days === undefined) return "Sin fecha"
+  if (days < 0) return "Vencido"
+  if (days === 0) return "Hoy"
+  return days === 1 ? "Mañana" : `En ${days} días`
+}
+
+function dueTone(days) {
+  return days !== null && days !== undefined && days <= 2 ? "due-chip-urgent" : ""
+}
+
+function followUpQueue() {
+  notices.forEach(syncNoticeCounters)
+  const families = new Map()
+  notices.forEach((notice) => noticeRoster(notice).forEach((student) => {
+    if (!families.has(student.id)) families.set(student.id, { student, items: [] })
+    families.get(student.id).items.push(notice)
+  }))
+  const dueOf = (notice) => (notice.dueDays === null || notice.dueDays === undefined ? Infinity : notice.dueDays)
+  return [...families.values()].map((family) => {
+    family.items.sort((a, b) => dueOf(a) - dueOf(b))
+    family.nextDue = dueOf(family.items[0])
+    return family
+  }).sort((a, b) => a.nextDue - b.nextDue || b.items.length - a.items.length)
+}
+
+function followUpMessage(family) {
+  const firstName = (name) => name.split(" ")[0]
+  const lines = family.items.map((notice) => `• ${notice.title} (${dueLabel(notice.dueDays).toLowerCase()})`)
+  return `Hola ${firstName(family.student.guardian)}, te escribimos del Colegio Horizonte. Para ${firstName(family.student.name)} nos falta:\n${lines.join("\n")}\n¿Puedes responder hoy? Muchas gracias.`
+}
+
+function familyCard(family, isDone) {
+  const { student, items } = family
+  const when = contacted[student.id]
+  return `<article class="family-card${family.nextDue <= 2 ? " family-card-urgent" : ""}">
+    <div class="family-main">${avatar(student.name, student.tone)}<div class="family-who"><strong>${escapeHtml(student.name)}</strong><small>${escapeHtml(student.guardian)} <span class="detail-separator">·</span> ${escapeHtml(student.phone)}</small></div></div>
+    <ul class="family-items" aria-label="Avisos pendientes de ${escapeHtml(student.name)}">${items.map((notice) => `<li><button class="due-chip ${dueTone(notice.dueDays)}" type="button" data-action="open-notice" data-id="${notice.id}"><span>${escapeHtml(notice.title)}</span><b>${dueLabel(notice.dueDays)}</b></button></li>`).join("")}</ul>
+    <div class="family-actions">${isDone
+      ? `<span class="contacted-stamp">${icon("checkCheck", 14)}Contactada ${escapeHtml(when)}</span><button class="button button-secondary button-small" type="button" data-action="undo-contact" data-student="${escapeHtml(student.id)}" aria-label="Deshacer contacto con ${escapeHtml(student.guardian)}">Deshacer</button>`
+      : `<button class="button button-primary button-small" type="button" data-action="family-message" data-student="${escapeHtml(student.id)}" aria-label="Preparar mensaje para ${escapeHtml(student.guardian)}">${icon("message", 14)}Preparar mensaje</button><button class="button button-secondary button-small" type="button" data-action="mark-contacted" data-student="${escapeHtml(student.id)}" aria-label="Marcar contactada a ${escapeHtml(student.guardian)}">${icon("check", 14)}Contactada</button>`}</div>
+  </article>`
+}
+
+function todayView() {
+  const queue = followUpQueue()
+  const pending = queue.filter((family) => !contacted[family.student.id])
+  const done = queue.filter((family) => contacted[family.student.id])
+  const soon = pending.filter((family) => family.items.some((notice) => notice.dueDays !== null && notice.dueDays >= 0 && notice.dueDays <= 2)).length
+  const shown = state.followTab === "Contactadas" ? done : pending
+  const empty = state.followTab === "Contactadas" ? "Aún no marcaste familias como contactadas." : "Todo al día: no quedan familias por contactar."
+  return `<section class="today-hero"><div class="today-copy"><span class="eyebrow">VIERNES, 30 DE OCTUBRE DE 2026</span><h1>A quién contactar hoy</h1><p>Una familia, un mensaje: reunimos todo lo que les falta, ordenado por vencimiento.</p></div><div class="today-stats" aria-label="Resumen del día"><div><strong>${pending.length}</strong><span>por contactar</span></div><div class="stat-soon"><strong>${soon}</strong><span>vencen en 48 h</span></div><div><strong>${done.length}</strong><span>contactadas hoy</span></div></div></section>
+    <section class="panel follow-panel"><div class="notice-toolbar"><div class="filter-tabs" role="tablist" aria-label="Estado del contacto">${["Por contactar", "Contactadas"].map((tab) => `<button class="filter-tab${state.followTab === tab ? " active" : ""}" type="button" role="tab" aria-selected="${state.followTab === tab}" data-action="follow-tab" data-tab="${tab}">${tab}<span class="tab-count">${tab === "Por contactar" ? pending.length : done.length}</span></button>`).join("")}</div><span class="follow-hint">Los avisos no se envían: es una demostración.</span></div>
+      <div class="family-list">${shown.length ? shown.map((family) => familyCard(family, state.followTab === "Contactadas")).join("") : `<div class="empty-state">${icon("checkCheck", 20)}<strong>${empty}</strong></div>`}</div></section>`
+}
+
 function dashboardView() {
   const query = state.search.trim().toLowerCase()
   const aggregate = noticeAggregate()
@@ -161,11 +227,11 @@ function notificationsView() {
 function studentsView() {
   const query = state.studentSearch.trim().toLowerCase()
   const filtered = students.filter((student) => (state.studentGroup === "Todos los grupos" || student.room === state.studentGroup) && `${student.name} ${student.room} ${student.guardian}`.toLowerCase().includes(query))
-  return `<section class="panel full-panel"><div class="page-title-row"><div><span class="eyebrow">COMUNIDAD ESCOLAR</span><h1>Alumnos y familias</h1><p>Consulta la información de contacto y los requisitos pendientes.</p></div><button class="button button-primary" type="button" data-action="new-student">${icon("plus", 17)}Agregar alumno</button></div><div class="list-summary student-summary"><div><strong>${300 + Math.max(0, students.length - 6)}</strong><span>alumnos en el padrón</span></div><div><strong>${groups.length + 7}</strong><span>grupos</span></div><div><strong>${14 + Math.max(0, students.length - 6)}</strong><span>fichas incompletas</span></div><label class="table-search list-search">${icon("search", 15)}<input data-search="students" aria-label="Buscar alumno o familia" value="${escapeHtml(state.studentSearch)}" placeholder="Buscar alumno o familia"></label></div><div class="student-filters"><label class="select-filter">${icon("filter", 15)}<select data-student-group aria-label="Filtrar por grupo"><option>Todos los grupos</option>${[...new Set(students.map((student) => student.room))].map((group) => `<option${state.studentGroup === group ? " selected" : ""}>${escapeHtml(group)}</option>`).join("")}</select>${icon("chevronDown", 14)}</label><span>Mostrando ${filtered.length} registros de ejemplo</span></div><div class="table-scroll"><table class="student-table"><thead><tr><th>ALUMNO</th><th>GRUPO</th><th>PADRE / TUTOR</th><th>INFORMACIÓN FALTANTE</th><th>FICHA</th></tr></thead><tbody>${filtered.map((student) => `<tr data-action="open-student" data-id="${escapeHtml(student.id)}"><td><div class="student-name">${avatar(student.name, student.tone, true)}<span><strong>${escapeHtml(student.name)}</strong><small>${escapeHtml(student.id)}</small></span></div></td><td>${escapeHtml(student.room)}</td><td><span class="guardian-name">${escapeHtml(student.guardian)}</span><small class="student-phone">${escapeHtml(student.phone)}</small></td><td><span class="missing-info">${icon("alert", 14)}${escapeHtml(student.missing)}</span></td><td><span class="profile-progress"><span><i style="width:${student.missing === "Ficha completa" ? "100%" : "80%"}"></i></span>${student.missing === "Ficha completa" ? "5/5" : "4/5"}</span></td></tr>`).join("")}</tbody></table></div></section>`
+  return `<section class="panel full-panel"><div class="page-title-row"><div><span class="eyebrow">COMUNIDAD ESCOLAR</span><h1>Alumnos y familias</h1><p>Consulta la información de contacto y los requisitos pendientes.</p></div><button class="button button-primary" type="button" data-action="new-student">${icon("plus", 17)}Agregar alumno</button></div><div class="list-summary student-summary"><div><strong>${300 + Math.max(0, students.length - 9)}</strong><span>alumnos en el padrón</span></div><div><strong>${groups.length + 7}</strong><span>grupos</span></div><div><strong>${14 + Math.max(0, students.length - 9)}</strong><span>fichas incompletas</span></div><label class="table-search list-search">${icon("search", 15)}<input data-search="students" aria-label="Buscar alumno o familia" value="${escapeHtml(state.studentSearch)}" placeholder="Buscar alumno o familia"></label></div><div class="student-filters"><label class="select-filter">${icon("filter", 15)}<select data-student-group aria-label="Filtrar por grupo"><option>Todos los grupos</option>${[...new Set(students.map((student) => student.room))].map((group) => `<option${state.studentGroup === group ? " selected" : ""}>${escapeHtml(group)}</option>`).join("")}</select>${icon("chevronDown", 14)}</label><span>Mostrando ${filtered.length} registros de ejemplo</span></div><div class="table-scroll"><table class="student-table"><thead><tr><th>ALUMNO</th><th>GRUPO</th><th>PADRE / TUTOR</th><th>INFORMACIÓN FALTANTE</th><th>FICHA</th></tr></thead><tbody>${filtered.map((student) => `<tr data-action="open-student" data-id="${escapeHtml(student.id)}"><td><div class="student-name">${avatar(student.name, student.tone, true)}<span><strong>${escapeHtml(student.name)}</strong><small>${escapeHtml(student.id)}</small></span></div></td><td>${escapeHtml(student.room)}</td><td><span class="guardian-name">${escapeHtml(student.guardian)}</span><small class="student-phone">${escapeHtml(student.phone)}</small></td><td><span class="missing-info">${icon("alert", 14)}${escapeHtml(student.missing)}</span></td><td><span class="profile-progress"><span><i style="width:${student.missing === "Ficha completa" ? "100%" : "80%"}"></i></span>${student.missing === "Ficha completa" ? "5/5" : "4/5"}</span></td></tr>`).join("")}</tbody></table></div></section>`
 }
 
 const adminSections = [
-  { title: "Estructura escolar", icon: "graduation", desc: "Colegio Horizonte · Ciclo 2026–2027", rows: () => [`Primaria · 8 grupos · 214 alumnos`, `Jardín · 4 salas · ${Math.max(0, 86 + students.length - 6)} alumnos`] },
+  { title: "Estructura escolar", icon: "graduation", desc: "Colegio Horizonte · Ciclo 2026–2027", rows: () => [`Primaria · 8 grupos · 214 alumnos`, `Jardín · 4 salas · ${Math.max(0, 86 + students.length - 9)} alumnos`] },
   { title: "Canales de comunicación", icon: "message", desc: "Medios disponibles para avisar a las familias", rows: () => ["WhatsApp · demostración, no conectado", "Correo electrónico · demostración", "Notificación en la plataforma · activa"] },
   { title: "Tipos de notificación", icon: "file", desc: "Requisitos por tipo de comunicación", rows: () => ["Eventos · asistencia y firma opcional", "Salidas · autorización obligatoria", "Vacunas · documentación requerida"] },
   { title: "Permisos del equipo", icon: "shield", desc: "Acceso a información de alumnos y familias", rows: () => ["Dirección · acceso completo", "Docentes · sus grupos", "Administración · datos y comunicaciones"] },
@@ -177,7 +243,7 @@ function administrationView() {
 
 function render() {
   renderSidebar()
-  const view = state.view === "notificaciones" ? notificationsView() : state.view === "alumnos" ? studentsView() : state.view === "administracion" ? administrationView() : dashboardView()
+  const view = state.view === "hoy" ? todayView() : state.view === "notificaciones" ? notificationsView() : state.view === "alumnos" ? studentsView() : state.view === "administracion" ? administrationView() : dashboardView()
   mainContent.innerHTML = `${view}<footer class="app-footer"><span>Aula Clara <span class="footer-dot">·</span> Comunicación escolar, con claridad.</span><span>Información de demostración <span class="footer-dot">·</span> Sesión no persistente</span></footer>`
   modalRoot.innerHTML = state.modal ? renderModal() : ""
 }
@@ -191,9 +257,16 @@ function renderModal() {
   if (modal.type === "notice-create") return `<div class="modal-backdrop" data-action="backdrop-close"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="new-notice-title"><div class="modal-header"><div><span class="eyebrow">NUEVO AVISO</span><h2 id="new-notice-title">Prepara una notificación</h2><p>Define a quién llega y qué necesitas recibir.</p></div><button class="icon-button" type="button" data-action="close-modal" aria-label="Cerrar">${icon("x", 19)}</button></div><form data-form="notice" class="notice-form"><label>Título del aviso<input name="title" required autofocus placeholder="Ej. Salida al museo"></label><div class="form-row"><label>Tipo<select name="type"><option>Evento</option><option>Autorización</option><option>Vacunas</option><option>Retiro</option></select></label><label>Grupo destinatario<select name="group">${groupOptions()}</select></label></div><label>Fecha límite<input name="date" type="date"></label><div class="requirement-options"><label class="check-option"><input name="needsReply" type="checkbox" checked><span>${icon("message", 17)}<span><strong>Solicitar respuesta</strong><small>Confirmación de asistencia o lectura</small></span></span></label><label class="check-option"><input name="needsSignature" type="checkbox"><span>${icon("file", 17)}<span><strong>Requiere firma</strong><small>Autorización del padre o tutor</small></span></span></label></div><div class="channel-note">${icon("message", 16)}<span>La entrega por WhatsApp y otros canales se mostrará en el seguimiento de demostración.</span></div><div class="modal-actions"><button type="button" class="button button-secondary" data-action="close-modal">Cancelar</button><button type="submit" class="button button-primary">${icon("send", 15)}Crear notificación</button></div></form></section></div>`
   if (modal.type === "student-create") return `<div class="modal-backdrop" data-action="backdrop-close"><section class="modal student-modal" role="dialog" aria-modal="true" aria-labelledby="new-student-title"><div class="modal-header"><div><span class="eyebrow">NUEVO REGISTRO</span><h2 id="new-student-title">Agregar alumno</h2><p>Registra a la familia y a las personas autorizadas.</p></div><button class="icon-button" type="button" data-action="close-modal" aria-label="Cerrar">${icon("x", 19)}</button></div><form class="notice-form" data-form="student"><div class="form-row"><label>Nombre del alumno<input name="name" required autofocus placeholder="Nombre y apellido"></label><label>Grupo<select name="group">${groupOptions("3.º A · Primaria")}</select></label></div><div class="form-row"><label>Padre / tutor<input name="guardian" required placeholder="Nombre y apellido"></label><label>Teléfono de contacto<input name="phone" required type="tel" placeholder="+54 9 ..."></label></div><label>Persona autorizada a retirar<input name="pickupPerson" placeholder="Opcional; quedará como pendiente"></label><label class="check-option vaccine-option"><input type="checkbox" name="vaccineOnFile"><span>${icon("heart", 17)}<span><strong>Cartilla de vacunación recibida</strong><small>Si no está disponible, se marcará como pendiente.</small></span></span></label><div class="channel-note">${icon("shield", 16)}<span>Los datos de contacto y retiro son de ejemplo y no se guardan.</span></div><div class="modal-actions"><button type="button" class="button button-secondary" data-action="close-modal">Cancelar</button><button type="submit" class="button button-primary">${icon("plus", 15)}Guardar alumno</button></div></form></section></div>`
   if (modal.type === "group-create") return `<div class="modal-backdrop" data-action="backdrop-close"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="new-group-title"><div class="modal-header"><div><span class="eyebrow">ESTRUCTURA ESCOLAR</span><h2 id="new-group-title">Agregar grupo</h2><p>Organiza alumnos para segmentar avisos.</p></div><button class="icon-button" type="button" data-action="close-modal" aria-label="Cerrar">${icon("x", 19)}</button></div><form class="notice-form" data-form="group"><label>Nombre del grupo<input name="group" required autofocus placeholder="Ej. 4.º A · Primaria"></label><div class="modal-actions"><button type="button" class="button button-secondary" data-action="close-modal">Cancelar</button><button type="submit" class="button button-primary">${icon("plus", 15)}Agregar grupo</button></div></form></section></div>`
+  if (modal.type === "followup-message") return followUpModal(followUpQueue().find((family) => family.student.id === modal.id))
   if (modal.type === "notice-detail") return noticeDetailModal(notices.find((notice) => String(notice.id) === String(modal.id)))
   if (modal.type === "student-detail") return studentDetailModal(students.find((student) => student.id === modal.id))
   return ""
+}
+
+function followUpModal(family) {
+  if (!family) return ""
+  const { student } = family
+  return `<div class="modal-backdrop" data-action="backdrop-close"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="followup-title"><div class="modal-header"><div><span class="eyebrow">MENSAJE PARA LA FAMILIA</span><h2 id="followup-title">${escapeHtml(student.guardian)}</h2><p>${escapeHtml(student.name)} <span class="detail-separator">·</span> ${escapeHtml(student.phone)}</p></div><button class="icon-button" type="button" data-action="close-modal" aria-label="Cerrar">${icon("x", 19)}</button></div><pre class="message-preview" aria-label="Texto del mensaje">${escapeHtml(followUpMessage(family))}</pre><div class="channel-note">${icon("shield", 16)}<span>Demostración: el mensaje no se envía. Cópialo y envíalo por tu canal habitual.</span></div><div class="modal-actions"><button type="button" class="button button-secondary" data-action="copy-message" data-student="${escapeHtml(student.id)}">Copiar mensaje</button><button type="button" class="button button-primary" data-action="mark-contacted" data-student="${escapeHtml(student.id)}">${icon("check", 15)}Marcar como contactada</button></div></section></div>`
 }
 
 function noticeDetailModal(notice) {
@@ -240,7 +313,7 @@ function openModal(type, id) {
   state.detailTab = "Pendientes"
   state.modal = { type, id }
   render()
-  window.setTimeout(() => modalRoot.querySelector("input[autofocus]")?.focus(), 0)
+  window.setTimeout(() => (modalRoot.querySelector("input[autofocus]") || modalRoot.querySelector(".modal button"))?.focus(), 0)
 }
 
 function closeModal() {
@@ -278,6 +351,23 @@ function handleClick(event) {
   }
   if (action === "send-reminder") { closeModal(); showToast("Recordatorio preparado para las familias pendientes."); return }
   if (action === "student-reminder") { closeModal(); showToast("Solicitud de información preparada."); return }
+  if (action === "follow-tab") { state.followTab = control.dataset.tab; render(); return }
+  if (action === "family-message") { openModal("followup-message", control.dataset.student); return }
+  if (action === "mark-contacted") {
+    contacted[control.dataset.student] = new Intl.DateTimeFormat("es", { hour: "2-digit", minute: "2-digit" }).format(new Date())
+    state.modal = null
+    render()
+    showToast("Familia marcada como contactada.")
+    return
+  }
+  if (action === "undo-contact") { delete contacted[control.dataset.student]; render(); showToast("Contacto deshecho."); return }
+  if (action === "copy-message") {
+    const family = followUpQueue().find((item) => item.student.id === control.dataset.student)
+    const text = family ? followUpMessage(family) : ""
+    const copied = navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject(new Error("sin portapapeles"))
+    copied.then(() => showToast("Mensaje copiado.")).catch(() => showToast("No se pudo copiar. Selecciona el texto manualmente."))
+    return
+  }
   if (action === "toggle-admin") { state.adminOpen = state.adminOpen === control.dataset.section ? "" : control.dataset.section; render(); return }
   if (action === "admin-toast" || action === "system-notifications") { showToast("Esta función está disponible en la versión conectada."); return }
 }
@@ -320,7 +410,8 @@ document.addEventListener("submit", (event) => {
     const iconType = type === "Evento" ? "event" : type === "Vacunas" ? "health" : type === "Retiro" ? "pickup" : "trip"
     const dueDate = data.get("date") ? new Intl.DateTimeFormat("es", { day: "numeric", month: "short" }).format(new Date(`${data.get("date")}T12:00:00`)) : "Sin fecha"
     const totalsByGroup = { "1.º A · Primaria": 24, "2.º B · Primaria": 26, "3.º A · Primaria": 28, "Toda primaria": 94, "Jardín · Salas 4 y 5": 43 }
-    notices.unshift({ id: Date.now(), title, type, group, date: dueDate, total: totalsByGroup[group] || 28, confirmed: 0, delivered: 0, status: "En seguimiento", icon: iconType, urgent: false, needsSignature: data.has("needsSignature"), needsReply: data.has("needsReply"), respondedIds: [] })
+    const dueDays = data.get("date") ? Math.round((new Date(`${data.get("date")}T12:00:00`) - DEMO_TODAY) / 86400000) : null
+    notices.unshift({ id: Date.now(), dueDays, title, type, group, date: dueDate, total: totalsByGroup[group] || 28, confirmed: 0, delivered: 0, status: "En seguimiento", icon: iconType, urgent: false, needsSignature: data.has("needsSignature"), needsReply: data.has("needsReply"), respondedIds: [] })
     state.modal = null
     render()
     showToast("Notificación creada. Ya puedes iniciar su seguimiento.")

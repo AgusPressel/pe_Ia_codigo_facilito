@@ -43,6 +43,7 @@ Las secciones describen roles conceptuales de Dirección, Docentes y Administrac
 
 El sistema debe mostrar:
 
+- Seguimiento de hoy (vista inicial; ver `specs/features/FOLLOWUP_QUEUE.md`).
 - Inicio.
 - Notificaciones.
 - Alumnos.

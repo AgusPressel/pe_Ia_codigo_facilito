@@ -161,3 +161,34 @@ h1,h2,h3{font-family:Manrope,'DM Sans',sans-serif;letter-spacing:-.55px}
 @media(max-width:970px){.sidebar{width:204px;flex-basis:204px;padding-left:12px;padding-right:12px}.topbar{padding:0 20px}.main-content{padding:23px 20px 0}.dashboard-grid{grid-template-columns:1fr}.right-column{display:grid;grid-template-columns:1.3fr 1fr}.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.metric-card{padding:14px}.notice-name strong{max-width:240px}.app-footer{padding-top:17px}}
 @media(max-width:680px){.sidebar{position:fixed;inset:0 auto 0 0;width:260px;max-width:84vw;transform:translateX(-105%);transition:transform .22s ease;box-shadow:8px 0 30px rgba(24,40,31,.08);padding:20px 15px 14px}.sidebar-open{transform:translateX(0)}.brand-block{padding-bottom:24px}.mobile-close{display:grid;margin-left:auto}.mobile-menu{display:grid;margin-left:-7px}.mobile-scrim{display:block;position:fixed;inset:0;z-index:15;border:0;background:rgba(29,42,35,.27)}.main-column{width:100%}.topbar{height:55px;padding:0 16px;gap:10px}.breadcrumbs{font-size:8px;gap:6px;flex:1}.topbar-actions{gap:10px}.school-year{font-size:9px}.topbar-actions>.avatar{display:none}.main-content{padding:20px 15px 0}.welcome-row{align-items:flex-start;flex-direction:column;margin-bottom:17px;gap:13px}.welcome-row h1{font-size:22px}.welcome-row p{font-size:11px}.create-button{height:35px}.metric-grid{gap:9px;margin-bottom:13px}.metric-card{padding:11px}.metric-icon{width:27px;height:27px}.metric-trend{font-size:7px}.metric-value{font-size:21px}.metric-label{font-size:10px}.metric-caption{font-size:8px}.dashboard-grid{gap:12px}.panel-heading{padding:14px 12px 11px}.panel-heading h2{font-size:13px}.panel-heading p{font-size:9px}.panel-heading>.text-link{font-size:9px}.notice-toolbar{padding:0 10px}.filter-tabs{gap:10px}.filter-tab{font-size:8.5px}.table-search{min-width:78px;padding:0 6px}.table-search input{width:61px;font-size:8px}.right-column{grid-template-columns:1fr}.full-panel{padding:15px 12px 0;min-height:420px}.page-title-row{align-items:flex-start;flex-direction:column;padding-bottom:14px}.page-title-row h1{font-size:20px}.page-title-row p{font-size:10px}.list-summary{gap:14px;flex-wrap:wrap}.list-summary>div strong{font-size:15px}.list-summary>div span{font-size:8px}.list-search{width:100%;margin-left:0;order:2}.student-summary .list-search{order:2}.admin-layout{grid-template-columns:1fr}.admin-side-note{display:none}.admin-card-content{padding-left:12px}.admin-setting{font-size:8px}.app-footer{flex-direction:column;gap:5px;padding:16px 0 12px;font-size:7.5px}.modal{padding:17px}.modal-header h2{font-size:16px}.modal-actions{flex-wrap:wrap}.modal-actions .button{flex:1}.student-detail-card .status{font-size:7px;padding:4px}.student-info-grid>div{padding:9px}.student-info-grid strong{font-size:8px}.detail-label{font-size:7px}.detail-number{font-size:18px}.detail-summary{padding:12px 4px}}
 @media(max-width:380px){.topbar{padding:0 11px}.breadcrumbs{font-size:7px}.school-year{display:none}.main-content{padding-left:11px;padding-right:11px}.metric-trend{font-size:6.5px}.metric-card{padding:9px}.metric-label{font-size:9px}.filter-tabs{gap:7px}.filter-tab{font-size:8px}.welcome-row h1{font-size:20px}.form-row{grid-template-columns:1fr}.student-detail-card{flex-wrap:wrap}.student-detail-card .status{margin-left:39px}}
+
+.button-small{height:32px;padding:0 12px}
+.today-hero{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:26px 28px;margin-bottom:18px;border-radius:14px;background:linear-gradient(135deg,#285746,#376c5a);color:#fff}
+.today-hero .eyebrow{color:rgba(255,255,255,.66)}
+.today-copy h1{margin:8px 0 6px;font-family:Manrope,'DM Sans',sans-serif;font-size:27px;letter-spacing:-.8px}
+.today-copy p{margin:0;max-width:430px;font-size:12.5px;line-height:1.5;color:rgba(255,255,255,.82)}
+.today-stats{display:flex;gap:10px}
+.today-stats>div{min-width:104px;padding:13px 14px;border-radius:11px;background:rgba(255,255,255,.12);display:flex;flex-direction:column;gap:4px}
+.today-stats strong{font-family:Manrope,'DM Sans',sans-serif;font-size:28px;line-height:1}
+.today-stats span{font-size:10.5px;color:rgba(255,255,255,.8)}
+.today-stats .stat-soon{background:#fbf3e8;color:#6b4513}
+.today-stats .stat-soon span{color:#8a6330}
+.follow-hint{font-size:10.5px;color:var(--muted)}
+.family-list{display:flex;flex-direction:column}
+.family-card{display:grid;grid-template-columns:minmax(190px,.8fr) minmax(0,1.6fr) auto;align-items:center;gap:16px;padding:15px;border-bottom:1px solid #edf0ed;border-left:3px solid transparent}
+.family-card:last-child{border-bottom:0}
+.family-card-urgent{border-left-color:var(--amber);background:linear-gradient(90deg,#fdf9f2,#fff 40%)}
+.family-main{display:flex;align-items:center;gap:11px;min-width:0}
+.family-who{display:flex;flex-direction:column;gap:3px;min-width:0}
+.family-who strong{font-size:12.5px}
+.family-who small{font-size:10.5px;color:var(--muted)}
+.family-items{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:7px}
+.due-chip{display:inline-flex;align-items:center;gap:8px;max-width:100%;padding:6px 10px;border:1px solid #e2e8e3;border-radius:8px;background:#fff;font-size:10.5px;color:#52625a;text-align:left}
+.due-chip:hover{border-color:#c9d5cd}
+.due-chip b{padding:2px 6px;border-radius:5px;background:var(--green-soft);color:var(--green-dark);font-size:9.5px;white-space:nowrap}
+.due-chip-urgent b{background:var(--amber-soft);color:#8a5a1f}
+.family-actions{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.contacted-stamp{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;color:var(--green)}
+.message-preview{margin:0 0 14px;padding:14px;border:1px solid #e2e8e3;border-radius:10px;background:var(--green-soft);font:inherit;font-size:12px;line-height:1.6;white-space:pre-wrap;color:var(--ink)}
+@media(max-width:970px){.today-hero{flex-direction:column;align-items:flex-start}.family-card{grid-template-columns:1fr}.family-actions{justify-content:flex-start}}
+@media(max-width:680px){.today-hero{padding:20px 18px}.today-copy h1{font-size:22px}.today-stats{width:100%}.today-stats>div{flex:1;min-width:0;padding:11px}.today-stats strong{font-size:23px}.follow-hint{display:none}.family-actions .button{flex:1}}
