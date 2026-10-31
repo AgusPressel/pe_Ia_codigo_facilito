@@ -34,6 +34,27 @@ const icon = (name, size = 18) => `<svg width="${size}" height="${size}" viewBox
 const escapeHtml = (value = "") => String(value).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char])
 const initials = (name = "") => name.trim().split(/\s+/).map((part) => part[0]).slice(0, 2).join("").toUpperCase()
 
+function uniqueRespondedIds(notice) {
+  return [...new Set((notice.respondedIds || []).map(String))]
+}
+
+function syncNoticeCounters(notice) {
+  notice.respondedIds = uniqueRespondedIds(notice)
+  notice.confirmed = notice.respondedIds.length
+  notice.delivered = Math.max(notice.confirmed, Math.min(notice.total, Number(notice.delivered) || 0))
+  if (notice.confirmed >= notice.total) notice.status = "Casi completo"
+  return notice
+}
+
+function noticeRoster(notice) {
+  const ids = uniqueRespondedIds(notice)
+  const matchingGroup = notice.group === "Toda primaria"
+    ? students
+    : students.filter((student) => student.room === notice.group || student.room.includes(notice.group.split(" · ")[0]))
+  const roster = matchingGroup.length ? matchingGroup : students
+  return roster.filter((student, index, list) => list.findIndex((item) => item.id === student.id) === index && !ids.includes(student.id))
+}
+
 const students = [
   { id: "AL-2048", name: "Mateo García", room: "3.º A · Primaria", guardian: "Lucía García", phone: "+54 9 11 5555 0124", pickupPerson: "Pendiente", missing: "Firma de salida", tone: "sage" },
   { id: "AL-2051", name: "Sofía Fernández", room: "3.º A · Primaria", guardian: "Marcos Fernández", phone: "+54 9 11 5555 0186", pickupPerson: "Marta Fernández", missing: "Confirmación de asistencia", tone: "peach" },
@@ -44,11 +65,11 @@ const students = [
 ]
 
 const notices = [
-  { id: 1, title: "Salida al Museo de Ciencias", type: "Autorización", group: "3.º A · Primaria", date: "Hoy, 16:00", total: 28, confirmed: 19, delivered: 26, status: "Requiere atención", icon: "trip", urgent: true, needsSignature: true, needsReply: true },
-  { id: 2, title: "Encuentro de familias", type: "Evento", group: "Toda primaria", date: "Lun, 2 nov.", total: 94, confirmed: 67, delivered: 90, status: "En seguimiento", icon: "event", urgent: true, needsSignature: false, needsReply: true },
-  { id: 3, title: "Actualización de cartilla de vacunación", type: "Vacunas", group: "1.º A · Primaria", date: "Mié, 4 nov.", total: 24, confirmed: 15, delivered: 24, status: "En seguimiento", icon: "health", urgent: true, needsSignature: false, needsReply: true },
-  { id: 4, title: "Autorización de retiro por terceros", type: "Autorización", group: "2.º B · Primaria", date: "Vie, 6 nov.", total: 26, confirmed: 21, delivered: 26, status: "Casi completo", icon: "pickup", urgent: false, needsSignature: true, needsReply: true },
-  { id: 5, title: "Festival de primavera", type: "Evento", group: "Jardín · Salas 4 y 5", date: "Sáb, 7 nov.", total: 43, confirmed: 31, delivered: 41, status: "En seguimiento", icon: "event", urgent: false, needsSignature: false, needsReply: true },
+  { id: 1, title: "Salida al Museo de Ciencias", type: "Autorización", group: "3.º A · Primaria", date: "Hoy, 16:00", total: 28, confirmed: 2, delivered: 26, status: "Requiere atención", icon: "trip", urgent: true, needsSignature: true, needsReply: true, respondedIds: ["AL-2048", "AL-2092"] },
+  { id: 2, title: "Encuentro de familias", type: "Evento", group: "Toda primaria", date: "Lun, 2 nov.", total: 94, confirmed: 3, delivered: 90, status: "En seguimiento", icon: "event", urgent: true, needsSignature: false, needsReply: true, respondedIds: ["AL-2051", "AL-2014", "AL-2110"] },
+  { id: 3, title: "Actualización de cartilla de vacunación", type: "Vacunas", group: "1.º A · Primaria", date: "Mié, 4 nov.", total: 24, confirmed: 1, delivered: 24, status: "En seguimiento", icon: "health", urgent: true, needsSignature: false, needsReply: true, respondedIds: ["AL-1983"] },
+  { id: 4, title: "Autorización de retiro por terceros", type: "Autorización", group: "2.º B · Primaria", date: "Vie, 6 nov.", total: 26, confirmed: 1, delivered: 26, status: "Casi completo", icon: "pickup", urgent: false, needsSignature: true, needsReply: true, respondedIds: ["AL-2110"] },
+  { id: 5, title: "Festival de primavera", type: "Evento", group: "Jardín · Salas 4 y 5", date: "Sáb, 7 nov.", total: 43, confirmed: 1, delivered: 41, status: "En seguimiento", icon: "event", urgent: false, needsSignature: false, needsReply: true, respondedIds: ["AL-2014"] },
 ]
 
 const groups = ["1.º A · Primaria", "2.º B · Primaria", "3.º A · Primaria", "Toda primaria", "Jardín · Salas 4 y 5"]
@@ -99,15 +120,30 @@ function metricCard(label, value, caption, iconName, trend, tone, positive = fal
   return `<article class="metric-card"><div class="metric-top"><span class="metric-icon metric-${tone}">${icon(iconName, 18)}</span><span class="metric-trend ${positive ? "trend-good" : "trend-neutral"}">${icon(positive ? "arrowUp" : "arrowDown", 13)}${escapeHtml(trend)}</span></div><div class="metric-value">${escapeHtml(value)}</div><div class="metric-label">${escapeHtml(label)}</div><div class="metric-caption">${escapeHtml(caption)}</div></article>`
 }
 
+function noticeAggregate() {
+  notices.forEach(syncNoticeCounters)
+  const total = notices.reduce((sum, notice) => sum + notice.total, 0)
+  const confirmed = notices.reduce((sum, notice) => sum + notice.confirmed, 0)
+  const delivered = notices.reduce((sum, notice) => sum + Math.min(notice.total, notice.delivered), 0)
+  return {
+    total,
+    confirmed,
+    pending: Math.max(0, total - confirmed),
+    delivered,
+    deliveryRate: total ? Math.round((delivered / total) * 100) : 0
+  }
+}
+
 function dashboardView() {
   const query = state.search.trim().toLowerCase()
+  const aggregate = noticeAggregate()
   const visible = notices.filter((notice) => {
     const matchesQuery = `${notice.title} ${notice.group} ${notice.type}`.toLowerCase().includes(query)
     const matchesFilter = state.filter === "Todos" || (state.filter === "Urgentes" ? notice.urgent : notice.status !== "Casi completo")
     return matchesQuery && matchesFilter
   })
   return `<section class="welcome-row"><div><span class="eyebrow">VIERNES, 30 DE OCTUBRE DE 2026</span><h1>Buen día, Mariana <span class="greeting-mark">.</span></h1><p>Hay información importante que necesita seguimiento hoy.</p></div><button class="button button-primary create-button" type="button" data-action="new-notice">${icon("plus", 17)}Nueva notificación</button></section>
-    <section class="metric-grid" aria-label="Resumen del colegio">${metricCard("Avisos activos", String(notices.length + 7), "En 8 grupos", "send", "+3 esta semana", "sage", true)}${metricCard("Respuestas pendientes", "47", "De 186 familias", "message", "12 urgentes", "amber")}${metricCard("Entregas confirmadas", "94%", "Últimos 7 días", "checkCheck", "+6% vs. anterior", "blue", true)}${metricCard("Datos incompletos", String(students.filter((student) => student.missing !== "Ficha completa").length + 8), "En 9 alumnos", "file", "3 por vencer", "rose")}</section>
+    <section class="metric-grid" aria-label="Resumen del colegio">${metricCard("Avisos activos", String(notices.length), "En seguimiento local", "send", `${notices.filter((notice) => notice.urgent).length} urgentes`, "sage", true)}${metricCard("Respuestas pendientes", String(aggregate.pending), `De ${aggregate.total} familias`, "message", `${aggregate.confirmed} confirmadas`, "amber")}${metricCard("Entregas confirmadas", `${aggregate.deliveryRate}%`, `De ${aggregate.total} avisos`, "checkCheck", `${aggregate.delivered} entregadas`, "blue", true)}${metricCard("Datos incompletos", String(students.filter((student) => student.missing !== "Ficha completa").length), "En el padrón de ejemplo", "file", "Sesión demostrativa", "rose")}</section>
     <div class="dashboard-grid"><section class="panel notices-panel"><div class="panel-heading"><div><span class="eyebrow">SEGUIMIENTO</span><h2>Notificaciones recientes</h2><p>Una vista clara de lo enviado y lo que falta.</p></div><button class="text-link" type="button" data-action="view-all">Ver todas ${icon("arrowRight", 15)}</button></div><div class="notice-toolbar"><div class="filter-tabs" role="tablist" aria-label="Filtrar notificaciones">${["Todos", "Por responder", "Urgentes"].map((tab) => `<button class="filter-tab${state.filter === tab ? " active" : ""}" type="button" role="tab" aria-selected="${state.filter === tab}" data-action="filter" data-filter="${tab}">${tab}${tab === "Urgentes" ? '<span class="tab-count">3</span>' : ""}</button>`).join("")}</div><label class="table-search">${icon("search", 15)}<input aria-label="Buscar notificaciones" data-search="dashboard" value="${escapeHtml(state.search)}" placeholder="Buscar"></label></div><div id="dashboardNoticeRows">${noticeRows(visible)}</div><div class="table-footer"><span>Mostrando <strong>${visible.length}</strong> de <strong>${notices.length}</strong> notificaciones</span><button class="icon-button" type="button" aria-label="Filtros adicionales">${icon("sliders", 15)}</button></div></section>
       <aside class="right-column"><section class="panel urgent-panel"><div class="panel-heading panel-heading-compact"><div><span class="eyebrow eyebrow-amber">ATENCIÓN PRIORITARIA</span><h2>Requieren seguimiento</h2></div><span class="urgent-count">3</span></div><div class="urgent-list"><button class="urgent-item" type="button" data-action="open-notice" data-id="1"><span class="urgent-mark">${icon("alert", 15)}</span><span class="urgent-copy"><strong>Firmas pendientes</strong><small>Salida al Museo de Ciencias</small><span class="urgent-meta">9 alumnos <i>·</i> Vence hoy</span></span>${icon("chevronRight", 16)}</button><button class="urgent-item" type="button" data-action="open-notice" data-id="3"><span class="urgent-mark urgent-mark-soft">${icon("heart", 15)}</span><span class="urgent-copy"><strong>Falta documentación</strong><small>Actualización de vacunas</small><span class="urgent-meta">4 alumnos <i>·</i> En 2 días</span></span>${icon("chevronRight", 16)}</button><button class="urgent-item" type="button" data-action="open-notice" data-id="2"><span class="urgent-mark urgent-mark-blue">${icon("clock", 15)}</span><span class="urgent-copy"><strong>Confirmaciones sin responder</strong><small>Encuentro de familias</small><span class="urgent-meta">27 familias <i>·</i> Mañana</span></span>${icon("chevronRight", 16)}</button></div><button class="urgent-footer" type="button" data-action="open-notice" data-id="1">Ver bandeja de atención ${icon("arrowRight", 15)}</button></section>
       <section class="panel completion-panel"><div class="completion-heading"><span class="completion-icon">${icon("shield", 17)}</span><div><h3>Ficha de alumnos</h3><p>Información esencial completa</p></div><button class="icon-button" type="button" aria-label="Más opciones">${icon("more", 17)}</button></div><div class="completion-count"><strong>286</strong><span>de 300 alumnos</span><strong class="completion-percent">95%</strong></div><div class="completion-track"><span></span></div><div class="completion-foot"><span><i class="legend-dot dot-done"></i>Completa</span><span><i class="legend-dot dot-incomplete"></i>14 por completar</span></div></section></aside>
@@ -117,7 +153,9 @@ function dashboardView() {
 function notificationsView() {
   const query = state.search.trim().toLowerCase()
   const filtered = notices.filter((notice) => `${notice.title} ${notice.group} ${notice.type}`.toLowerCase().includes(query))
-  return `<section class="panel full-panel"><div class="page-title-row"><div><span class="eyebrow">COMUNICACIÓN CON FAMILIAS</span><h1>Notificaciones</h1><p>Administra cada aviso y sigue las respuestas de principio a fin.</p></div><button class="button button-primary" type="button" data-action="new-notice">${icon("plus", 17)}Nueva notificación</button></div><div class="list-summary"><div><strong>${notices.length}</strong><span>avisos activos</span></div><div><strong>${notices.filter((notice) => notice.urgent).length + 2}</strong><span>necesitan seguimiento</span></div><div><strong>94%</strong><span>entrega confirmada</span></div><label class="table-search list-search">${icon("search", 15)}<input data-search="notices" aria-label="Buscar por aviso o grupo" value="${escapeHtml(state.search)}" placeholder="Buscar por aviso o grupo"></label></div><div id="allNoticeRows">${noticeRows(filtered)}</div></section>`
+  const aggregate = noticeAggregate()
+  const needsTracking = notices.filter((notice) => notice.confirmed < notice.total).length
+  return `<section class="panel full-panel"><div class="page-title-row"><div><span class="eyebrow">COMUNICACIÓN CON FAMILIAS</span><h1>Notificaciones</h1><p>Administra cada aviso y sigue las respuestas de principio a fin.</p></div><button class="button button-primary" type="button" data-action="new-notice">${icon("plus", 17)}Nueva notificación</button></div><div class="list-summary"><div><strong>${notices.length}</strong><span>avisos activos</span></div><div><strong>${needsTracking}</strong><span>necesitan seguimiento</span></div><div><strong>${aggregate.deliveryRate}%</strong><span>entrega confirmada</span></div><label class="table-search list-search">${icon("search", 15)}<input data-search="notices" aria-label="Buscar por aviso o grupo" value="${escapeHtml(state.search)}" placeholder="Buscar por aviso o grupo"></label></div><div id="allNoticeRows">${noticeRows(filtered)}</div></section>`
 }
 
 function studentsView() {
@@ -160,10 +198,29 @@ function renderModal() {
 
 function noticeDetailModal(notice) {
   if (!notice) return ""
-  const pendingStudents = students.filter((student) => !(notice.respondedIds || []).includes(student.id)).slice(0, 5)
-  const repliedStudents = (notice.respondedIds || []).map((id) => students.find((student) => student.id === id)).filter(Boolean)
-  const shown = state.detailTab === "Respondieron" ? (repliedStudents.length ? repliedStudents : students.slice(1, 4)) : pendingStudents
-  return `<div class="modal-backdrop" data-action="backdrop-close"><section class="modal detail-modal" role="dialog" aria-modal="true" aria-labelledby="detail-title"><div class="modal-header"><div><span class="eyebrow">DETALLE DE NOTIFICACIÓN</span><h2 id="detail-title">${escapeHtml(notice.title)}</h2><p>${escapeHtml(notice.group)} <span class="detail-separator">·</span> ${escapeHtml(notice.type)} <span class="detail-separator">·</span> Vence ${escapeHtml(notice.date)}</p></div><button class="icon-button" type="button" data-action="close-modal" aria-label="Cerrar">${icon("x", 19)}</button></div><div class="detail-summary"><div><span class="detail-number">${notice.confirmed}<small>/${notice.total}</small></span><span class="detail-label">respuestas recibidas</span></div><div class="detail-summary-divider"></div><div><span class="detail-number">${Math.max(notice.delivered - notice.confirmed, 0)}</span><span class="detail-label">por responder</span></div><div class="detail-summary-divider"></div><div><span class="detail-number">${notice.delivered}<small>/${notice.total}</small></span><span class="detail-label">avisos entregados</span></div></div><div class="detail-tabs">${["Pendientes", "Respondieron"].map((tab) => `<button class="detail-tab${(state.detailTab || "Pendientes") === tab ? " active" : ""}" type="button" data-action="detail-tab" data-tab="${tab}">${tab}<span>${tab === "Pendientes" ? Math.max(notice.total - notice.confirmed, 0) : notice.confirmed}</span></button>`).join("")}</div><div class="people-list">${shown.length ? shown.map((student) => `<div class="person-row">${avatar(student.name, student.tone, true)}<span class="person-info"><strong>${escapeHtml(student.name)}</strong><small>${escapeHtml(student.room)} <span class="detail-separator">·</span> Familia ${escapeHtml(student.guardian.split(" ").slice(-1)[0])}</small></span>${state.detailTab === "Respondieron" ? '<span class="person-status person-replied">' + icon("checkCheck", 14) + "Confirmó</span>" : `<button class="response-action" type="button" data-action="mark-response" data-student="${student.id}" data-notice="${notice.id}">Registrar respuesta</button>`}</div>`).join("") : '<div class="empty-state">No hay alumnos en esta lista.</div>'}</div><div class="modal-actions detail-actions"><button type="button" class="button button-secondary" data-action="close-modal">Cerrar detalle</button><button type="button" class="button button-primary" data-action="send-reminder" data-id="${notice.id}">${icon("message", 15)}Preparar recordatorio</button></div></section></div>`
+  syncNoticeCounters(notice)
+  const pendingStudents = noticeRoster(notice)
+  const repliedStudents = uniqueRespondedIds(notice).map((id) => students.find((student) => student.id === id)).filter(Boolean)
+  const activeTab = state.detailTab || "Pendientes"
+  const shown = activeTab === "Respondieron" ? repliedStudents : pendingStudents
+  const pendingCount = Math.max(0, notice.total - notice.confirmed)
+  const deliveredCount = Math.max(notice.confirmed, Math.min(notice.total, notice.delivered))
+  return `<div class="modal-backdrop" data-action="backdrop-close"><section class="modal detail-modal" role="dialog" aria-modal="true" aria-labelledby="detail-title">
+    <div class="modal-header"><div><span class="eyebrow">DETALLE DE NOTIFICACIÓN</span><h2 id="detail-title">${escapeHtml(notice.title)}</h2><p>${escapeHtml(notice.group)} <span class="detail-separator">·</span> ${escapeHtml(notice.type)} <span class="detail-separator">·</span> Vence ${escapeHtml(notice.date)}</p></div><button class="icon-button" type="button" data-action="close-modal" aria-label="Cerrar">${icon("x", 19)}</button></div>
+    <div class="detail-summary">
+      <div><span class="detail-number">${notice.confirmed}<small>/${notice.total}</small></span><span class="detail-label">respuestas recibidas</span></div>
+      <div class="detail-summary-divider"></div>
+      <div><span class="detail-number">${pendingCount}</span><span class="detail-label">pendientes</span></div>
+      <div class="detail-summary-divider"></div>
+      <div><span class="detail-number">${deliveredCount}<small>/${notice.total}</small></span><span class="detail-label">avisos entregados</span></div>
+    </div>
+    <div class="detail-tabs" role="tablist" aria-label="Seguimiento de familias">${["Pendientes", "Respondieron"].map((tab) => `<button class="detail-tab${activeTab === tab ? " active" : ""}" type="button" role="tab" aria-selected="${activeTab === tab}" data-action="detail-tab" data-tab="${tab}">${tab}<span>${tab === "Pendientes" ? pendingCount : notice.confirmed}</span></button>`).join("")}</div>
+    <div class="people-list">${shown.length ? shown.map((student) => {
+      const replied = activeTab === "Respondieron"
+      return `<div class="person-row">${avatar(student.name, student.tone, true)}<span class="person-info"><strong>${escapeHtml(student.name)}</strong><small>${escapeHtml(student.room)} <span class="detail-separator">·</span> Familia ${escapeHtml(student.guardian.split(" ").slice(-1)[0])}</small></span>${replied ? '<span class="person-status person-replied">' + icon("checkCheck", 14) + "Confirmó</span>" : `<button class="response-action" type="button" data-action="mark-response" data-student="${escapeHtml(student.id)}" data-notice="${notice.id}">Registrar respuesta</button>`}</div>`
+    }).join("") : '<div class="empty-state">No hay alumnos en esta lista.</div>'}</div>
+    <div class="modal-actions detail-actions"><button type="button" class="button button-secondary" data-action="close-modal">Cerrar detalle</button><button type="button" class="button button-primary" data-action="send-reminder" data-id="${notice.id}">${icon("message", 15)}Preparar recordatorio</button></div>
+  </section></div>`
 }
 
 function studentDetailModal(student) {
@@ -211,7 +268,12 @@ function handleClick(event) {
   if (action === "mark-response") {
     const notice = notices.find((item) => String(item.id) === control.dataset.notice)
     const studentId = control.dataset.student
-    if (notice && !(notice.respondedIds || []).includes(studentId)) { notice.respondedIds = [...(notice.respondedIds || []), studentId]; notice.confirmed = Math.min(notice.total, notice.confirmed + 1); showToast("Respuesta registrada para este aviso."); render() }
+    if (notice && studentId && !uniqueRespondedIds(notice).includes(studentId) && notice.confirmed < notice.total) {
+      notice.respondedIds = [...uniqueRespondedIds(notice), studentId]
+      syncNoticeCounters(notice)
+      showToast("Respuesta registrada para este aviso.")
+      render()
+    }
     return
   }
   if (action === "send-reminder") { closeModal(); showToast("Recordatorio preparado para las familias pendientes."); return }
@@ -246,12 +308,19 @@ document.addEventListener("submit", (event) => {
   const data = new FormData(form)
   if (form.dataset.form === "notice") {
     const title = String(data.get("title") || "").trim()
-    if (!title) return
+    const titleInput = form.elements.title
+    if (!title) {
+      titleInput.setCustomValidity("Escribe un título que no esté vacío ni contenga solo espacios.")
+      titleInput.reportValidity()
+      return
+    }
+    titleInput.setCustomValidity("")
     const type = String(data.get("type") || "Evento")
     const group = String(data.get("group") || "Toda primaria")
     const iconType = type === "Evento" ? "event" : type === "Vacunas" ? "health" : type === "Retiro" ? "pickup" : "trip"
     const dueDate = data.get("date") ? new Intl.DateTimeFormat("es", { day: "numeric", month: "short" }).format(new Date(`${data.get("date")}T12:00:00`)) : "Sin fecha"
-    notices.unshift({ id: Date.now(), title, type, group, date: dueDate, total: group === "Toda primaria" ? 94 : 28, confirmed: 0, delivered: 0, status: "En seguimiento", icon: iconType, urgent: false, needsSignature: data.has("needsSignature"), needsReply: data.has("needsReply") })
+    const totalsByGroup = { "1.º A · Primaria": 24, "2.º B · Primaria": 26, "3.º A · Primaria": 28, "Toda primaria": 94, "Jardín · Salas 4 y 5": 43 }
+    notices.unshift({ id: Date.now(), title, type, group, date: dueDate, total: totalsByGroup[group] || 28, confirmed: 0, delivered: 0, status: "En seguimiento", icon: iconType, urgent: false, needsSignature: data.has("needsSignature"), needsReply: data.has("needsReply"), respondedIds: [] })
     state.modal = null
     render()
     showToast("Notificación creada. Ya puedes iniciar su seguimiento.")
